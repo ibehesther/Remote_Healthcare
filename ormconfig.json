@@ -1,0 +1,10 @@
+{
+    "type": "mysql",
+    "host": "127.0.0.1",
+    "port": 3306,
+    "username": "root",
+    "password": "SQL_Root_Password",
+    "database": "test",
+    "entities": ["src/**/**.entity{.ts,.js}"],
+    "synchronize": false
+}
