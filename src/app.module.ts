@@ -21,7 +21,8 @@ import { UserModule } from './user/user.module';
         "username": configService.get('DATABASE_USER'),
         "password": configService.get('DATABASE_PASSWORD'),
         "database": "test",
-        "entities": [ User],
+        "entities": [ User ],
+        "migrations": ["src/migration/**/*.ts"],
         "autoLoadEntities": true,
         "synchronize": false
       }),

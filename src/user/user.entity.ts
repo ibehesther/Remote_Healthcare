@@ -1,16 +1,6 @@
+import { Min } from "class-validator";
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
-enum Gender {
-    MALE="male",
-    FEMALE="female"
-}
-
-enum UserRole {
-    PATIENT= "patient",
-    PROVIDER="provider",
-    ADMIN="admin",
-    SUPER_ADMIN="super admin"
-}
+import { Gender, UserRole } from "../dto/user.dto";
 
 @Entity()
 export class User extends BaseEntity{
@@ -18,15 +8,21 @@ export class User extends BaseEntity{
     id: number
 
     @Column()
+    @Min(1)
     first_name: string
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     middle_name: string
 
     @Column()
+    @Min(1)
     last_name: string
 
-    @Column()
+    @Column({
+        unique: true
+    })
     email: string
 
     @Column()
@@ -54,7 +50,9 @@ export class User extends BaseEntity{
     })
     role: UserRole
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     notes: string
 
     @CreateDateColumn()
