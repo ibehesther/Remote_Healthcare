@@ -2,13 +2,14 @@ import {
     PipeTransform,
     BadRequestException
   } from '@nestjs/common';
-import { CreateUserDTO } from 'src/dto/user.dto';
-import { createUserSchema } from 'src/validators/user.validator';
+import { CreateUserDTO, UpdateUserDTO } from 'src/dto/user.dto';
+import { createUserSchema, updateUserSchema } from 'src/validators/user.validator';
   
-  export class CreateUserValidationPipe implements PipeTransform<CreateUserDTO> {
-    transform(value: CreateUserDTO): CreateUserDTO {
-        const result = createUserSchema.validate(value);
-        
+
+  export class UpdateUserValidationPipe implements PipeTransform<UpdateUserDTO> {
+    transform(value: UpdateUserDTO): UpdateUserDTO {
+        const result = updateUserSchema.validate(value);
+
         if (result.error) {
             const errorMessages = result.error.details.map((d) => d.message).join();
             throw new BadRequestException(errorMessages);

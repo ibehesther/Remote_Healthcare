@@ -37,3 +37,8 @@ export interface UpdateUserDTO {
     role?: UserRole,
     notes?: string
 }
+
+export interface SignInUserDTO {
+    email: string,
+    password: string,
+}

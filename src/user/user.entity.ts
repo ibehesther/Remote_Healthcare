@@ -1,6 +1,7 @@
 import { Min } from "class-validator";
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Gender, UserRole } from "../dto/user.dto";
+import * as bcrypt from "bcrypt";
 
 @Entity()
 export class User extends BaseEntity{
@@ -60,4 +61,15 @@ export class User extends BaseEntity{
 
     @UpdateDateColumn()
     updatedAt: Date
+
+    async hashPassword(password: string){
+        let user = this;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        user.password = hashedPassword;
+    }
+
+    async comparePassword(password: string) {
+        return await bcrypt.compare(password, this.password);
+      }
 }
