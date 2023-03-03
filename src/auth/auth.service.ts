@@ -1,8 +1,10 @@
 import { BadRequestException, HttpException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateUserDTO, SignInUserDTO } from "src/dto/user.dto";
+import { CreateUserDTO } from "src/dto/create-user.dto";
+import { SignInUserDTO } from "src/dto/signin-user.dto";
 import { User } from "src/user/user.entity";
 import { QueryFailedError, Repository } from "typeorm";
+import * as bcrypt from "bcrypt";
 
 
 @Injectable()
@@ -11,11 +13,18 @@ export class AuthService{
         @InjectRepository(User)
         private userRepository: Repository<User>
     ) {}
-    
+
     async signUpUser(user_data: CreateUserDTO): Promise<User | HttpException>{
         try{
+            console.log(user_data)
             let user = this.userRepository.create(user_data)
-            await user.hashPassword(user_data.password);
+
+            console.log(user)
+            // Hash password before storing in database
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(user_data.password, salt);
+            user.password = hashedPassword;
+
             await this.userRepository.save(user);
             
             if(!user){
@@ -39,9 +48,9 @@ export class AuthService{
 
         if(!user) throw new NotFoundException("User not found")
 
-        let password = await user.comparePassword(user_data.password);
+        let isCorrectPassword = await bcrypt.compare(user_data.password, user.password);
         
-        if(!password) throw new UnauthorizedException("User is not authenicated");
+        if(!isCorrectPassword) throw new UnauthorizedException("User is not authenicated");
 
         return user
     }
